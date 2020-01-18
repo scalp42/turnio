@@ -1,11 +1,11 @@
 module.exports = function (controller) {
-     
+
     // Show the api of @turnio
     controller.hears(
 
-      ['help', 'help (.*)', '(.*) help (.*)'], 
+      ['help', 'help (.*)', '(.*) help (.*)'],
 
-      'direct_message,direct_mention,mention', 
+      'direct_message,direct_mention,mention',
 
       help
 
@@ -13,59 +13,59 @@ module.exports = function (controller) {
 
     // Show users in the queue
     controller.hears(
-      
-      ['show','show (.*)','(.*) show (.*)'], 
-      
-      'direct_message,direct_mention,mention', 
-      
+
+      ['show','show (.*)','(.*) show (.*)'],
+
+      'direct_message,direct_mention,mention',
+
       queue
 
     );
 
     // Add user to the queue
     controller.hears(
-      
+
       ['add','add (.*)', '(.*) add (.*)'],
-      
-      'direct_message,direct_mention,mention', 
-      
+
+      'direct_message,direct_mention,mention',
+
       add
 
     );
 
     // Delete user in the queue
     controller.hears(
-      
+
       ['del', 'del (.*)', '(.*) del (.*)'],
-      
-      'direct_message,direct_mention,mention', 
-      
+
+      'direct_message,direct_mention,mention',
+
       del
-      
+
     );
 
     // Delete all users in the queue
     controller.hears(
-      
+
       ['clean','clean (.*)','(.*) clean (.*)'],
-      
-      'direct_message,direct_mention,mention', 
-      
+
+      'direct_message,direct_mention,mention',
+
       clean
-      
+
     );
 
-    /** Callbacks for hears */    
+    /** Callbacks for hears */
 
     function help(bot, message) {
-       
-      const help = 'Hello '+ '<@'+ message.user +'>! This is my API: ' +'\n' + 
-            '> `add`  : Add a user to the queue\n' +
+
+      const help = 'Hello '+ '<@'+ message.user +'>! This is my API: ' +'\n' +
+            '> `add`  : Add yourself to the queue\n' +
             '> `show` : Show the queue\n' +
-            '> `del`  : Delete user of the queue\n' + 
-            '> `clean`: Delete all users in the queue\n' +
-            '> `help` : Show the turnioAPI avalaible\n' + 
-            'Name me with any of this commands. Ex: Hey `@turnio` `show` me the queue. ¡Try it!'; 
+            '> `del`  : Remove yourself from the queue\n' +
+            '> `clean`: Delete all users from the queue\n' +
+            '> `help` : Show this message\n' +
+            'Ping me with any of those commands, ex: Hey `@deploy_queue` `show` me the queue.';
 
        bot.reply(message, help);
 
@@ -74,10 +74,10 @@ module.exports = function (controller) {
     function queue(bot, message) {
 
         // load user from storage...
-        controller.storage.teams.get('queue', function(err, queue) { 
-            
+        controller.storage.teams.get('queue', function(err, queue) {
+
             if (!queue || !queue.users || queue.users.length == 0) {
-                bot.reply(message, "There is no one in the queue at the moment, name me and add the command `add` to add you.");                
+                bot.reply(message, "There is no one in the queue at the moment, ping me with the command `add` to add yourself.");
             } else {
                 bot.reply(message, generateQueueList(queue.users));
             }
@@ -97,18 +97,18 @@ module.exports = function (controller) {
                 queue = {
                     'id': 'queue',
                     'users': []
-                };                
+                };
             }
-            
+
             var user = findUser(queue.users,message.user);
-                                     
-            if(user){                
+
+            if(user){
                 bot.reply(message, "<"+ user.name +">, You are in the queue already. When it's your turn, I'll let you know.");
                 bot.reply(message, generateQueueList(queue.users));
             } else {
-                
+
                 userInfo(bot.api, message.user, function (err, user) {
-                    
+
                     queue.users.push({
                         id: message.user,
                         name: '@' + user.name
@@ -118,9 +118,9 @@ module.exports = function (controller) {
                         if (err) {
                             bot.reply(message, 'I experienced an error adding your task: ' + err);
                         } else {
-                            
+
                             bot.api.reactions.add({
-                                name: 'thumbsup',
+                                name: 'pepevoteyes',
                                 channel: message.channel,
                                 timestamp: message.ts
                             });
@@ -129,74 +129,74 @@ module.exports = function (controller) {
                         }
                     });
                 });
-            }            
+            }
         });
     }
-  
+
     function del(bot, message) {
-        
+
         controller.storage.teams.get('queue', function(err, queue) {
             if(err){
                 return throwError(err);
             }
-            
+
             if (!queue || !queue.users || queue.users.length == 0 || findUser(queue.users,message.user) === undefined) {
-                bot.reply(message, "The queue doesn't exist or you aren't in it\n" +
-                                   "You can see the persons in the queue, Name me and add the command `show`");                
+                bot.reply(message, "The queue doesn't exist, you aren't in it or the container restarted.\n" +
+                                   "You can see the persons in the queue, ping with the command `show`");
             } else {
-                                     
+
                 queue.users = queue.users.filter(function(user){
                     return (user.id != message.user);
                 });
-                     
+
                 controller.storage.teams.save(queue, function(err,saved) {
                     if (err) {
                         bot.reply(message, 'I experienced an error adding your task: ' + err);
                     } else {
                         bot.api.reactions.add({
-                            name: 'thumbsup',
+                            name: 'pepeok',
                             channel: message.channel,
                             timestamp: message.ts
                         });
 
                         if(queue.users && queue.users.length > 0){
 
-                            bot.reply(message, '<'+ queue.users[0].name +'> is your turn! When you finish, you should delete you from the queue. Name me and add the command `del`. Thank you.');
+                            bot.reply(message, '<'+ queue.users[0].name +"> is your turn to deploy! Ping me with the command `del` when you're done.");
                         }
                     }
-                });                
-            }                        
+                });
+            }
         });
 
     }
 
     function clean(bot, message) {
-        
+
         controller.storage.teams.get('queue', function(err, queue) {
             if(err){
                 return throwError(err);
             }
-            
+
             if (!queue || !queue.users || queue.users.length == 0) {
-                bot.reply(message, 'There is no one in the queue at the moment.');                
-            } else {                
-                queue.users = [];                                          
+                bot.reply(message, 'There is no one in the queue at the moment.');
+            } else {
+                queue.users = [];
                 controller.storage.teams.save(queue, function(err,saved) {
                     if (err) {
                         bot.reply(message, 'I experienced an error adding your task: ' + err);
                     } else {
                         bot.api.reactions.add({
-                            name: 'thumbsup',
+                            name: 'pepecowboy',
                             channel: message.channel,
                             timestamp: message.ts
                         });
                     }
-                });                
-            }                        
+                });
+            }
         });
 
     }
-    
+
 
     /** Utils */
 
@@ -211,11 +211,11 @@ module.exports = function (controller) {
 
     // Generate list of users
     function generateQueueList(users) {
-        
+
         var text = 'The queue is composed of next persons: \n';
 
-        users.forEach(function(user, i){                
-            text = text + '> `' +  (i + 1) + 'º` ' +  user.name + '\n';            
+        users.forEach(function(user, i){
+            text = text + '> `' +  (i + 1) + 'º` ' +  user.name + '\n';
         });
 
         return text;
@@ -223,8 +223,8 @@ module.exports = function (controller) {
 
     // Find user by id
     function findUser(users, id){
-        
-        return users.find(function(user, i){ return (user.id === id);});                
+
+        return users.find(function(user, i){ return (user.id === id);});
     }
 
 };
