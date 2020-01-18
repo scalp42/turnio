@@ -212,7 +212,7 @@ module.exports = function (controller) {
     // Generate list of users
     function generateQueueList(users) {
 
-        var text = 'The queue is composed of next persons: \n';
+        var text = 'The following people are in the queue: \n';
 
         users.forEach(function(user, i){
             text = text + '> `' +  (i + 1) + 'º` ' +  user.name + '\n';
