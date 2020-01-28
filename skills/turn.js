@@ -161,7 +161,7 @@ module.exports = function (controller) {
 
                         if(queue.users && queue.users.length > 0){
 
-                            bot.reply(message, '<'+ queue.users[0].name +"> is your turn to deploy! Ping me with the command `del` when you're done.");
+                            bot.reply(message, '<'+ queue.users[0].name +"> it's your turn to deploy! Ping me with the command `del` when you're done.");
                         }
                     }
                 });
