@@ -11,17 +11,6 @@ module.exports = function (controller) {
 
     );
 
-    // Show users in the queue
-    controller.hears(
-
-      ['show','show (.*)','(.*) show (.*)'],
-
-      'direct_message,direct_mention,mention',
-
-      queue
-
-    );
-
     // Add user to the queue
     controller.hears(
 
@@ -30,6 +19,17 @@ module.exports = function (controller) {
       'direct_message,direct_mention,mention',
 
       add
+
+    );
+
+    // Show users in the queue
+    controller.hears(
+
+      ['show','show (.*)','(.*) show (.*)'],
+
+      'direct_message,direct_mention,mention',
+
+      queue
 
     );
 
