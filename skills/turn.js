@@ -61,7 +61,7 @@ module.exports = function (controller) {
 
       const help = 'Hello '+ '<@'+ message.user +'>! This is my API: ' +'\n' +
             '> `add`  : Add yourself to the queue\n' +
-            '> `show` : Show the queue\n' +
+            '> `show` or `list` : Show the queue\n' +
             '> `del`  : Remove yourself from the queue\n' +
             '> `clean`: Delete all users from the queue\n' +
             '> `help` : Show this message\n' +
