@@ -25,7 +25,7 @@ module.exports = function (controller) {
     // Show users in the queue
     controller.hears(
 
-      ['show','show (.*)','(.*) show (.*)'],
+      ['show','show (.*)','(.*) show (.*)', 'list','list (.*)','(.*) list (.*)'],
 
       'direct_message,direct_mention,mention',
 
