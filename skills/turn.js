@@ -141,8 +141,8 @@ module.exports = function (controller) {
             }
 
             if (!queue || !queue.users || queue.users.length == 0 || findUser(queue.users,message.user) === undefined) {
-                bot.reply(message, "The queue doesn't exist, you aren't in it or the container restarted.\n" +
-                                   "You can see the persons in the queue, ping with the command `show`");
+                bot.reply(message, "Either the queue doesn't exist, you aren't in it or the container restarted.\n" +
+                                   "You can see the persons in the queue by pinging me with the command `show` or `list`.");
             } else {
 
                 queue.users = queue.users.filter(function(user){
