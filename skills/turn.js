@@ -1,16 +1,5 @@
 module.exports = function (controller) {
 
-    // Show the api of @turnio
-    controller.hears(
-
-      ['help', 'help (.*)', '(.*) help (.*)'],
-
-      'direct_message,direct_mention,mention',
-
-      help
-
-    );
-
     // Add user to the queue
     controller.hears(
 
@@ -52,6 +41,17 @@ module.exports = function (controller) {
       'direct_message,direct_mention,mention',
 
       clean
+
+    );
+
+    // Show the api of @turnio
+    controller.hears(
+
+      ['help', 'help (.*)', '(.*) help (.*)'],
+
+      'direct_message,direct_mention,mention',
+
+      help
 
     );
 
